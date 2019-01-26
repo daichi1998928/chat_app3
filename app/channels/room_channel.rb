@@ -1,6 +1,6 @@
 class RoomChannel < ApplicationCable::Channel
   def subscribed #フロントエンドとバックエンドが繋がったときに実行されるメソッド
-
+    stream_from "room_channel"
     # stream_from "some_channel"
   end
 
@@ -8,6 +8,8 @@ class RoomChannel < ApplicationCable::Channel
     # Any cleanup needed when channel is unsubscribed
   end
 
-  def speak
+  def speak(data)
+    Message.create!(content: data['message'])
+    ActionCable.server.broadcast 'room_channel',data['message']
   end
 end
