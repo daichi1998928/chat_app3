@@ -12,13 +12,14 @@ App.room = App.cable.subscriptions.create("RoomChannel",{
 
   },
 
-  received: function (data){
+  received: function (message){
     //dataを受け取る時に使われるメソッド
     // Called when there's incoming data on the websocket for this channel
-    alert(data)
+    const messages = document.getElementById('messages')
+    messages.innerHTML +=  message
   },
 
-  speak: function(){
+  speak: function(content){
     return this.perform ('speak', {message: content});
     //speakがあるとrailsのsepakメソッドが実行される
 
@@ -27,10 +28,11 @@ App.room = App.cable.subscriptions.create("RoomChannel",{
 });
 
 document.addEventListener('DOMContentLoaded',function(){
-  input = document.getElementById('chat-input')
-  button = document
+  const input = document.getElementById('chat-input')
+  const button = document.getElementById('button')
   button.addEventListener('click', function(){
-    content = input.value
-
+    const content = input.value
+    App.room.speak(content)
+    input.value = ''
   })
 })
